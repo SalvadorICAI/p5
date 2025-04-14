@@ -24,17 +24,31 @@ class RegisterRequestUnitTest {
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
-    public void testValidRequest() {
-        // Given ...
+    public void testInvalidEmail() {
         RegisterRequest registro = new RegisterRequest(
-                "Nombre", "nombre@email.com",
+                "Nombre", "no-es-un-email",
                 Role.USER, "aaaaaaA1");
-        // When ...
+
         Set<ConstraintViolation<RegisterRequest>> violations =
                 validator.validate(registro);
-        // Then ...
-        assertTrue(violations.isEmpty());
+
+        assertEquals(1, violations.size());
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("email")));
     }
+
+    @Test
+    public void testNullRole() {
+        RegisterRequest registro = new RegisterRequest(
+                "Nombre", "usuario@email.com",
+                null, "aaaaaaA1");
+
+        Set<ConstraintViolation<RegisterRequest>> violations =
+                validator.validate(registro);
+
+        assertEquals(1, violations.size());
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("role")));
+    }
+
 
 
 }
