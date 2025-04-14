@@ -55,10 +55,20 @@ class UserControllerIntegrationTest {
      */
     @Test void registerInvalidPassword() throws Exception {
         // Given ...
+        String badRequest = "{" +
+                "\"name\":\"" + NAME + "\"," +
+                "\"email\":\"" + EMAIL + "\"," +
+                "\"role\":\"" + Role.USER + "\"," +
+                "\"password\":\"123\"}"; // contraseña débil: muy corta y sin mayúsculas
 
         // When ...
-
+        this.mockMvc
+                .perform(MockMvcRequestBuilders.post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(badRequest))
                 // Then ...
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        }
 
     }
 }
