@@ -39,6 +39,6 @@ public class AppUser {
         @Column(nullable = false)
         private String name;
 
-        
+
 
 }

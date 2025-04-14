@@ -19,5 +19,23 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 public class Token {
     @Id @GeneratedValue(strategy = GenerationType.UUID) public String id;
+    package edu.comillas.icai.gitt.pat.spring.p5.entity;
+
+import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+    @Entity(name = "TOKEN")
+    public class Token {
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.UUID)
+        public String id;
+
+        @OneToOne
+        @OnDelete(action = OnDeleteAction.CASCADE)
+        private AppUser appUser;
+    }
+
 
 }
