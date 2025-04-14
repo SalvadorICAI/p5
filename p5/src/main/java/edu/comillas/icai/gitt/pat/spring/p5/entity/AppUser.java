@@ -20,4 +20,25 @@ import jakarta.persistence.Id;
 
 public class AppUser {
 
+    @Entity(name = "APP_USER")
+    public class AppUser {
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
+        @Column(nullable = false, unique = true)
+        private String email;
+
+        @Column(nullable = false)
+        private String password;
+
+        @Column(nullable = false)
+        private Role role;
+
+        @Column(nullable = false)
+        private String name;
+
+        
+
 }
