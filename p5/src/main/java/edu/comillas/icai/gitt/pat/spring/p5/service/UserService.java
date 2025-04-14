@@ -79,7 +79,7 @@ public class UserService implements UserServiceInterface {
     public void logout(String tokenId) {
         tokenRepository.deleteById(tokenId);
     }
-    
+
     public void delete(AppUser appUser) {
         appUserRepository.delete(appUser);
     }

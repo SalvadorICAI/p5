@@ -35,6 +35,22 @@ import org.hibernate.annotations.OnDeleteAction;
         @OneToOne
         @OnDelete(action = OnDeleteAction.CASCADE)
         private AppUser appUser;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public AppUser getAppUser() {
+            return appUser;
+        }
+
+        public void setAppUser(AppUser appUser) {
+            this.appUser = appUser;
+        }
     }
 
 
