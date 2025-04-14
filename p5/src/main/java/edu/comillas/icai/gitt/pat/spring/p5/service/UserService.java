@@ -23,38 +23,66 @@ import java.util.Optional;
 
 @Service
 public class UserService implements UserServiceInterface {
+    @Autowired
+    private AppUserRepository appUserRepository;
+
+    @Autowired
+    private TokenRepository tokenRepository;
 
     public Token login(String email, String password) {
-        AppUser appUser = null;
+        AppUser appUser = appUserRepository.findByEmail(email);
         if (appUser == null) return null;
 
-        Token token = null;
-        if (token != null) return token;
+        if (!Hashing.matches(password, appUser.getPassword())) return null;
 
-        token = new Token();
-        return null;
+        Token existing = tokenRepository.findByAppUser(appUser);
+        if (existing != null) return existing;
+
+        Token token = new Token();
+        token.setAppUser(appUser);
+        return tokenRepository.save(token);
     }
 
     public AppUser authentication(String tokenId) {
-        return null;
+        Optional<Token> token = tokenRepository.findById(tokenId);
+        return token.map(Token::getAppUser).orElse(null);
     }
 
     public ProfileResponse profile(AppUser appUser) {
-        return null;
+        return new ProfileResponse(appUser.getEmail(), appUser.getName(), appUser.getRole());
     }
+
     public ProfileResponse profile(AppUser appUser, ProfileRequest profile) {
-        return null;
+        if (StringUtils.hasText(profile.name())) {
+            appUser.setName(profile.name());
+        }
+
+        if (StringUtils.hasText(profile.password())) {
+            appUser.setPassword(Hashing.hash(profile.password()));
+        }
+
+        appUser = appUserRepository.save(appUser);
+        return profile(appUser);
     }
+
     public ProfileResponse profile(RegisterRequest register) {
-        return null;
+        AppUser appUser = new AppUser();
+        appUser.setEmail(register.email());
+        appUser.setPassword(Hashing.hash(register.password()));
+        appUser.setRole(register.role());
+        appUser.setName(register.name());
+
+        appUser = appUserRepository.save(appUser);
+        return profile(appUser);
     }
 
     public void logout(String tokenId) {
-
+        tokenRepository.deleteById(tokenId);
     }
-
+    
     public void delete(AppUser appUser) {
-
+        appUserRepository.delete(appUser);
     }
+
 
 }
