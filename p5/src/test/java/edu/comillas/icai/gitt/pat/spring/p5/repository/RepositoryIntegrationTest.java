@@ -23,13 +23,30 @@ class RepositoryIntegrationTest {
     @Test void saveTest() {
         // Given ...
         AppUser user = new AppUser();
+        user.setEmail("test@email.com");
+        user.setPassword("password");
+        user.setRole(Role.USER);
+        user.setName("Test User");
+
+        AppUser savedUser = appUserRepository.save(user);
+
         Token token = new Token();
+        token.setAppUser(savedUser);
+
+        Token savedToken = tokenRepository.save(token);
 
         // When ...
+        AppUser foundUser = appUserRepository.findByEmail("test@email.com");
+        Token foundToken = tokenRepository.findByAppUser(savedUser);
 
         // Then ...
+        Assertions.assertNotNull(foundUser);
+        Assertions.assertEquals(savedUser.getId(), foundUser.getId());
 
+        Assertions.assertNotNull(foundToken);
+        Assertions.assertEquals(savedToken.getId(), foundToken.getId());
     }
+
 
     /**
      * TODO#10
@@ -38,11 +55,24 @@ class RepositoryIntegrationTest {
      */
     @Test void deleteCascadeTest() {
         // Given ...
+        AppUser user = new AppUser();
+        user.setEmail("cascade@email.com");
+        user.setPassword("password");
+        user.setRole(Role.USER);
+        user.setName("Cascade User");
+
+        AppUser savedUser = appUserRepository.save(user);
+
+        Token token = new Token();
+        token.setAppUser(savedUser);
+        tokenRepository.save(token);
 
         // When ...
+        appUserRepository.delete(savedUser);
 
         // Then ...
         Assertions.assertEquals(0, appUserRepository.count());
-
+        Assertions.assertEquals(0, tokenRepository.count());
     }
+
 }
